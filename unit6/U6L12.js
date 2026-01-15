@@ -2,6 +2,9 @@
 hideElement("forecastButton");
 console.log("The forecast button has been hidden until app load completion");
 
+// Creates a variable to store the time of the app launch
+var startTime = getTime();
+
 // Pulls data from the Daily Weather dataset in Code.org
 // Adds the previously pulled data to lists which are unfiltered and will later be filtered by date
 var cityUnFiltered = getColumn("Daily Weather", "City");
@@ -54,6 +57,7 @@ function filterData(){
     if (index > dateUnfiltered.length){
 			console.log("Finished Filtering Data");
 			console.log("Filtered " + (index-1) + " entries of data");
+			console.log("It took " + (getTime() - startTime) + " milliseconds to accquire and load the necessary data");
 			console.log("The app is now loaded and ready for use");
 			showElement("forecastButton");
       break;
