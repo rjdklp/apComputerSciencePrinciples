@@ -1,3 +1,6 @@
+// This code is built specifically for Unit 6 Lesson 12 of AP Computer Science Principles using Code.org's curriculum
+// The code can be altered in several ways, with the most important way being changing which date is being filtered for
+
 // Hides the forecast button so that users cannot run code before the app is finished loading
 hideElement("forecastButton");
 console.log("The forecast button has been hidden until app load completion");
@@ -12,6 +15,9 @@ var highUnFiltered = getColumn("Daily Weather", "High Temperature");
 var lowUnFiltered = getColumn("Daily Weather", "Low Temperature");
 var conditionUnFiltered = getColumn("Daily Weather", "Condition Description");
 var iconUnFiltered = getColumn("Daily Weather", "Icon");
+
+// Times how long it takes for unfiltered data to be pulled from the Daily Weather dataset
+console.log("It took: " + (getTime()-startTime) + " milliseconds from start to fetch unfiltered data");
 
 // Creates blank lists to store the filtered data
 var cityFiltered = [];
@@ -57,7 +63,7 @@ function filterData(){
     if (index > dateUnfiltered.length){
 			console.log("Finished Filtering Data");
 			console.log("Filtered " + (index-1) + " entries of data");
-			console.log("It took " + (getTime() - startTime) + " milliseconds to accquire and process the necessary data");
+			console.log("It took " + (getTime() - startTime) + " milliseconds to accquire and process the necessary data from start");
 			console.log("The app is now loaded and ready for use");
 			showElement("forecastButton");
       break;
