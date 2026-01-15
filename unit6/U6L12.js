@@ -1,5 +1,6 @@
 // Hides the forecast button so that users cannot run code before the app is finished loading
 hideElement("forecastButton");
+console.log("The forecast button has been hidden until app load completion");
 
 // Pulls data from the Daily Weather dataset in Code.org
 // Adds the previously pulled data to lists which are unfiltered and will later be filtered by date
