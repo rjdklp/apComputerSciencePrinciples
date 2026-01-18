@@ -46,10 +46,23 @@ function newButton(desiredId, desiredMessage, desiredXPosition, desiredYPosition
     setProperty(desiredId, "text-align", "center");
 }
 
+function newScreenNavigationButtons(previousScreenId, nextScreenId, backButtonId, nextButtonId){
+    if ((typeof previousScreenId !== "string") || (typeof nextScreenId !== "string") || (typeof backButtonId !== "string") || (typeof nextButtonId !== "string")){
+        throw new Error("newScreenNavigationButtons requires string based parameters");
+    }
+    button(backButtonId, "Back");
+    button(nextButtonId, "Next");
+    setPosition(previousButtonId, 60, 420, 100, 50);
+    setPosition(nextButtonId, 260, 420, 100, 50);
+    setProperty(previousButtonId, "text-align", "center");
+    setProperty(nextButtonId, "text-align", "center");
+}
+
 newLabel("screen1Title", "Passwords Dataset Analyzer", 160, 100, 300, 100, 25);
 newLabel("screen1Intro", "Made by rjdklp & Dom, please enjoy", 160, 225, 250, 150, 18);
 newButton("screen2NextScreenButton", "Next Screen", 260, 420, 100, 50);
 
 onEvent("screen2NextScreenButton", "click", function(){
     setScreen("screen2");
+    newScreenNavigationButtons("screen1", "screen3", "screen2BackButton", "screen2NextButton");
 });
