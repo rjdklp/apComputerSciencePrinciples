@@ -50,12 +50,8 @@ function newScreenNavigationButtons(previousScreenId, nextScreenId, backButtonId
     if ((typeof previousScreenId !== "string") || (typeof nextScreenId !== "string") || (typeof backButtonId !== "string") || (typeof nextButtonId !== "string")){
         throw new Error("newScreenNavigationButtons requires string based parameters");
     }
-    button(backButtonId, "Back");
-    button(nextButtonId, "Next");
-    setPosition(previousButtonId, 60, 420, 100, 50);
-    setPosition(nextButtonId, 260, 420, 100, 50);
-    setProperty(previousButtonId, "text-align", "center");
-    setProperty(nextButtonId, "text-align", "center");
+    newButton(backButtonId, "Back", 60, 420, 100, 50);
+    newButton(nextButtonId, "Next", 260, 420, 100, 50);
 }
 
 newLabel("screen1Title", "Passwords Dataset Analyzer", 160, 100, 300, 100, 25);
