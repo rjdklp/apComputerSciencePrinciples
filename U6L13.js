@@ -236,6 +236,22 @@ function dynamicFilter(category, bound, lastLowestMax, lastHighestMin){
     }
 }
 
+function makeRandomPassword(){
+    var number = 0;
+    var randomPasswordCompList = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b",
+        "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
+        "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", 
+        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
+        "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X",
+        "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", 
+        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    var password = "";
+    for(var pIndex = 1; pIndex < 32; pIndex++){
+        number = randomNumber(0, ((randomPasswordCompList.length) - 1));
+        password = password + randomPasswordCompList[number]; 
+    }
+    setProperty("screen4PasswordOut", "text", password);
+}
 
 // UI Element Creation Below
 
@@ -364,5 +380,12 @@ onEvent("screen3Next5FilterButton", "click", function(){
 setScreen("screen4");
 // Code for screen4 here
 newScreenNavigationButtons("screen3", undefined, "screen4BackButton", undefined);
+newLabel("screen4Title", "Password Generator", 160, 60, 400, 100, 25);
+newLabel("screen4Intro", "Creates a random alpha-numeric 32 digit password", 160, 120, 250, 150, 14);
+newButton("screen4RandomPasswordIn", "Click to make a random password!", 160, 210, 150, 150);
+newInput("screen4PasswordOut", "", 160, 330, 320, 20, 14);
+onEvent("screen4RandomPasswordIn", "click", function(){
+    makeRandomPassword();
+});
 
 setScreen("screen1");
