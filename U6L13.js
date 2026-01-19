@@ -64,14 +64,19 @@ function newScreenNavigationButtons(previousScreenId, nextScreenId, backButtonId
     }
 }
 
+
+
+
+
 console.log("Fetching dataset...");
 var datasetFetchInit = getTime();
+var passwordsPassword = getColumn("Passwords", "password")
 var passwordsRank = getColumn("Passwords", "rank");
 var passwordsCategory = getColumn("Passwords", "category");
 var passwordsValue = getColumn("Passwords", "value");
 var passwordsTime_Unit = getColumn("Passwords", "time_unit");
-var strength = getColumn("Passwords", "strength");
-var indexLimit = (strength.length - 1);
+var passwordsStrength = getColumn("Passwords", "strength");
+var indexLimit = (passwordsStrength.length - 1);
 for(var index; index < indexLimit; index++){
     passwordsRank[index] = (passwordsRank[index]) - 1;
 }
@@ -79,7 +84,12 @@ console.log("Finished fetching dataset in " + ((getTime() - datasetFetchInit)/10
 timeSinceInit();
 
 function fetchIndex(indexNumber){
-    whileTrue
+    setProperty("screen2PasswordOut", "text", passwordsPassword[indexNumber]);
+    setProperty("screen2RankOut", "text", passwordsRank[indexNumber]);
+    setProperty("screen2CategoryOut", "text", passwordsCategory[indexNumber]);
+    setProperty("screen2ValueOut", "text", passwordsValue[indexNumber]);
+    setProperty("screen2TimeUnitOut", "text", passwordsTime_Unit[indexNumber]);
+    setProperty("screen2StrengthOut", "text", passwordsStrength[indexNumber]);
 }
 
 
@@ -91,10 +101,7 @@ function fetchIndex(indexNumber){
 newLabel("screen1Title", "Passwords Dataset Analyzer", 160, 60, 300, 100, 25);
 newLabel("screen1Intro", "Made by rjdklp, please enjoy", 160, 165, 250, 150, 18);
 newButton("screen1NextButton", "Next", 260, 420, 75, 40);
-onEvent("screen1NextButton", "click", function(){
-    setScreen("screen2");
-});
-newButton("screen1Github", "Latest Source Code", 100, 310, 160, 160);
+newButton("screen1Github", "Latest Source Code", 160, 270, 160, 160);
 setProperty("screen1Github", "font-size", 35);
 setProperty("screen1Github", "font-family", "Times");
 setProperty("screen1Github", "text-color", rgb(0, 0, 0));
@@ -102,24 +109,34 @@ setProperty("screen1Github", "background-color", rgb(84, 234, 189));
 onEvent("screen1Github", "click", function(){
     open("https://raw.githubusercontent.com/rjdklp/APCSP-25-26/refs/heads/main/unit6/U6L13/U6L13.js", undefined, "Window");
 });
+onEvent("screen1NextButton", "click", function(){
+    setScreen("screen2");
+});
 
 setScreen("screen2");
 // Code for screen2 here
 newScreenNavigationButtons("screen1", "screen3", "screen2BackButton", "screen2NextButton");
 newLabel("screen2Title", "Passwords Visualizer", 160, 60, 400, 100, 25);
 newLabel("screen2Intro", "Allows for visualization of user defined indexes in the passwords dataset", 160, 120, 250, 150, 14);
-newLabel("screen2ListIndexInputUse", "Click on the text box to send a request", 160, 140, 250, 35, 10);
-newLabel("screen2Rank", "Rank", 32, 215, 100, 35, 10);
-newLabel("screen2Category", "Category", 96, 215, 100, 35, 10);
-newLabel("screen2Value", "Value", 160, 215, 100, 35, 10);
-newLabel("screen2TimeUnit", "Time Unit", 224, 215, 100, 35, 10);
-newLabel("screen2Strength", "Strength", 288, 215, 100, 35, 10);
-newLabel("screen2RankOut", "", 32, 230, 100, 35, 12);
-newLabel("screen2CategoryOut", "", 96, 230, 100, 35, 12);
-newLabel("screen2ValueOut", "", 160, 230, 100, 35, 12);
-newLabel("screen2TimeUnitOut", "", 224, 230, 100, 35, 12);
-newLabel("screen2StrengthOut", "", 288, 230, 100, 35, 12);
+newLabel("screen2ListIndexInputUse", "Click here to send a request", 160, 140, 250, 35, 10);
+setProperty("screen2ListIndexInputUse", "text-color", rgb(255, 0, 0));
+setProperty("screen2ListIndexInputUse", "font-family", "Times");
+newLabel("screen2Password", "Password", 160, 235, 100, 35, 10);
+newLabel("screen2Rank", "Rank", 32, 285, 100, 35, 10);
+newLabel("screen2Category", "Category", 96, 285, 100, 35, 10);
+newLabel("screen2Value", "Value", 160, 285, 100, 35, 10);
+newLabel("screen2TimeUnit", "Time Unit", 224, 285, 100, 35, 10);
+newLabel("screen2Strength", "Strength", 288, 285, 100, 35, 10);
+newLabel("screen2PasswordOut", "", 160, 260, 100, 35, 12);
+newLabel("screen2RankOut", "", 32, 300, 100, 35, 12);
+newLabel("screen2CategoryOut", "", 96, 300, 100, 35, 12);
+newLabel("screen2ValueOut", "", 160, 300, 100, 35, 12);
+newLabel("screen2TimeUnitOut", "", 224, 300, 100, 35, 12);
+newLabel("screen2StrengthOut", "", 288, 300, 100, 35, 12);
 newInput("screen2ListIndexInput", "Insert a number between 1 and 494", 160, 160, 220, 35, 10);
+onEvent("screen2ListIndexInputUse", "click", function(){
+    fetchIndex((+getText("screen2ListIndexInput")) - 1);
+});
 
 setScreen("screen3");
 // Code for screen3 here
