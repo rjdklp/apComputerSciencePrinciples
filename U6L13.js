@@ -255,6 +255,9 @@ function makeRandomPassword(){
 
 // UI Element Creation Below
 
+console.log("Creating UI Elements...");
+var UiElementsCreationInit = getTime();
+
 // Already on screen1 so no set screen required
 newLabel("screen1Title", "Passwords Dataset Analyzer", 160, 60, 300, 100, 25);
 newLabel("screen1Intro", "Made by rjdklp, please enjoy", 160, 165, 250, 150, 18);
@@ -389,3 +392,7 @@ onEvent("screen4RandomPasswordIn", "click", function(){
 });
 
 setScreen("screen1");
+
+console.log("Finished creating UI elements in " + ((getTime() - UiElementsCreationInit)/1000) + " seconds \n");
+console.log("Finished App Initialization");
+timeSinceInit();
