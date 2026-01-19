@@ -123,71 +123,115 @@ function fetchIndex(indexNumber){
     setProperty("screen2StrengthOut", "text", passwordsStrength[indexNumber]);
 }
 
-function dynamicFilter(category, bound){
-    if (bound == "Maximum"){
-        var index = 0;
-        var secondIndex = 0;
-        var max;
-        var latestMax = 100000000000000;
-        index = 0;
-        max = 0;
-        while(secondIndex<5){
-            while(index<indexLimit){
-                if ((+category[index] > max) && (+category[index] < latestMax)){
-                    max = +category[index];
-                    index++
-                } else {
-                    index++
-                    continue;
-                }
-            }
-            index = 0;
-            if (secondIndex == 0){
-                setProperty("screen3Rank1Out", "text", max);
-            } if (secondIndex == 1){
-                setProperty("screen3Rank2Out", "text", max);
-            } if (secondIndex == 2){
-                setProperty("screen3Rank3Out", "text", max);
-            } if (secondIndex == 3){
-                setProperty("screen3Rank4Out", "text", max);
-            } if (secondIndex == 4){
-                setProperty("screen3Rank5Out", "text", max);
-            } 
-            secondIndex++;
-            latestMax = max;
+var runNumber;
+var max;
+var min;
+var index;
+var entryNum = 0;
+var next5Calls = 0;
+
+function initialMax(category){
+    max = 0;
+    index = 0;
+    for (var index = 0; index<493; index++){
+        if (category[index] > max){
+            max = category[index];
+            entryNum = index+1;
+        } else {
+            continue;
         }
     }
-    if (bound == "Minimum"){
-        var index = 0;
-        var secondIndex = 0;
-        var min;
-        var latestMin = 0;
-        index = 0;
-        min = 100000000000000;
-        while(secondIndex<5){
-            while(index<indexLimit){
-                if ((+category[index] < min) && (+category[index] > latestMin)){
-                    min = +category[index];
-                    index++
-                } else {
-                    index++
-                    continue;
-                }
+    return [entryNum, max];
+}
+
+function nextMax(category, lastMax){
+    max = 0;
+    index = 0;
+    for (var index = 0; index<493; index++){
+        if ((category[index] > max) && (category[index] < lastMax)){
+            max = category[index];
+            entryNum = index+1;
+        } else {
+            continue;
+        }
+    }
+    return [entryNum, max]; 
+}
+
+function initialMin(category){
+    min = 999999;
+    index = 0;
+    for (var index = 0; index<493; index++){
+        if (category[index] < min){
+            min = category[index];
+            entryNum = index+1;
+        } else {
+            continue;
+        }
+    }
+    return [entryNum, min];
+}
+
+function nextMin(category, lastMin){
+    min = 999999;
+    index = 0;
+    for (var index = 0; index<493; index++){
+        if ((category[index] < min) && (category[index] > lastMin)){
+            min = category[index];
+            entryNum = index+1;
+        } else {
+            continue;
+        }
+    }
+    return [entryNum, min]; 
+}
+
+function dynamicFilter(category, bound, lastLowestMax, lastHighestMin){
+    if (next5Calls == 0){
+        if (bound == "Maximum"){
+        runNumber = 1;
+        lastEntryAndMax = initialMax(category);
+        setProperty("screen3RankEntryOut1", "text", lastEntryAndMax[0]);
+        setProperty("screen3RankOut1", "text", lastEntryAndMax[1]);
+        runNumber++;
+        for (var index = 0; index < 4; index++){
+            lastEntryAndMax = nextMax(category, lastEntryAndMax[1]);
+            setProperty("screen3RankEntryOut" + runNumber, "text", lastEntryAndMax[0]);
+            setProperty("screen3RankOut" + runNumber, "text", lastEntryAndMax[1]);
+            runNumber++;
+        }
+    }   if (bound == "Minimum"){
+            runNumber = 1;
+            lastEntryAndMin = initialMin(category);
+            setProperty("screen3RankEntryOut1", "text", lastEntryAndMin[0]);
+            setProperty("screen3RankOut1", "text", lastEntryAndMin[1]);
+            runNumber++;
+            for (var index = 0; index < 4; index++){
+                lastEntryAndMin = nextMin(category, lastEntryAndMin[1]);
+                setProperty("screen3RankEntryOut" + runNumber, "text", lastEntryAndMin[0]);
+                setProperty("screen3RankOut" + runNumber, "text", lastEntryAndMin[1]);
+                runNumber++;
             }
-            index = 0;
-            if (secondIndex == 0){
-                setProperty("screen3Rank1Out", "text", min);
-            } if (secondIndex == 1){
-                setProperty("screen3Rank2Out", "text", min);
-            } if (secondIndex == 2){
-                setProperty("screen3Rank3Out", "text", min);
-            } if (secondIndex == 3){
-                setProperty("screen3Rank4Out", "text", min);
-            } if (secondIndex == 4){
-                setProperty("screen3Rank5Out", "text", min);
-            } 
-            secondIndex++;
-            latestMin = min;
+        }
+    } else {
+        if (bound == "Maximum"){
+        runNumber = 1;
+        lastEntryAndMax[1] = lastLowestMax;
+        for (var index = 0; index < 5; index++){
+            lastEntryAndMax = nextMax(category, lastEntryAndMax[1]);
+            setProperty("screen3RankEntryOut" + runNumber, "text", lastEntryAndMax[0]);
+            setProperty("screen3RankOut" + runNumber, "text", lastEntryAndMax[1]);
+            runNumber++;
+        }
+    }   if (bound == "Minimum"){
+            runNumber = 1;
+            lastEntryAndMin[1] = lastHighestMin;
+            for (var index = 0; index < 5; index++){
+                lastEntryAndMin = nextMin(category, lastEntryAndMin[1]);
+                setProperty("screen3RankEntryOut" + runNumber, "text", lastEntryAndMin[0]);
+                setProperty("screen3RankOut" + runNumber, "text", lastEntryAndMin[1]);
+                runNumber++;
+            }
         }
     }
 }
@@ -241,26 +285,79 @@ setScreen("screen3");
 newScreenNavigationButtons("screen2", "screen4", "screen3BackButton", "screen3NextButton");
 newLabel("screen3Title", "Passwords Filter", 160, 60, 400, 100, 25);
 newLabel("screen3Intro", "Allows user-directed filtering of the passwords dataset", 160, 120, 250, 150, 14);
-newButton("screen3FilterButton", "Click to filter", 160, 150, 100, 50);
-newDropdown("screen3CategoryInput", "Rank", "Value", "Strength", undefined, undefined, undefined, undefined, undefined, undefined, undefined, 55, 150, 100, 30, 13);
-newDropdown("screen3BoundInput", "Maximum", "Minimum", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, 265, 150, 100, 30, 13);
-newLabel("screen3Rank1", "1:", 32, 220, 30, 20, 14);
-newLabel("screen3Rank2", "2:", 32, 240, 30, 20, 14);
-newLabel("screen3Rank3", "3:", 32, 260, 30, 20, 14);
-newLabel("screen3Rank4", "4:", 32, 280, 30, 20, 14);
-newLabel("screen3Rank5", "5:", 32, 300, 30, 20, 14);
-newLabel("screen3Rank1Out", "", 64, 220, 200, 20, 10);
-newLabel("screen3Rank2Out", "", 64, 240, 200, 20, 10);
-newLabel("screen3Rank3Out", "", 64, 260, 200, 20, 10);
-newLabel("screen3Rank4Out", "", 64, 280, 200, 20, 10);
-newLabel("screen3Rank5Out", "", 64, 300, 200, 20, 10);
+newLabel("screen3Tip", "Check any entries you are curious about on the previous screen!", 160, 180, 300, 150, 9);
+newLabel("screen3UseCase", "When set to minimum, the lowest value is highest on the ranking list", 160, 200, 300, 150, 10);
+newButton("screen3FilterButton", "Click to filter", 160, 180, 100, 50);
+newDropdown("screen3CategoryInput", "Rank", "Value", "Strength", undefined, undefined, undefined, undefined, undefined, undefined, undefined, 55, 180, 100, 30, 13);
+newDropdown("screen3BoundInput", "Maximum", "Minimum", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, 265, 180, 100, 30, 13);
+newButton("screen3Next5FilterButton", "Click to see next 5", 160, 220, 200, 25);
+hideElement("screen3Next5FilterButton");
+newLabel("screen3RankEntry1", "Entry:", 16, 250, 30, 20, 18);
+newLabel("screen3RankEntry2", "Entry:", 16, 270, 30, 20, 18);
+newLabel("screen3RankEntry3", "Entry:", 16, 290, 30, 20, 18);
+newLabel("screen3RankEntry4", "Entry:", 16, 310, 30, 20, 18);
+newLabel("screen3RankEntry5", "Entry:", 16, 330, 30, 20, 18);
+newLabel("screen3RankEntryOut1", "Entry:", 96, 250, 30, 20, 18);
+newLabel("screen3RankEntryOut2", "Entry:", 96, 270, 30, 20, 18);
+newLabel("screen3RankEntryOut3", "Entry:", 96, 290, 30, 20, 18);
+newLabel("screen3RankEntryOut4", "Entry:", 96, 310, 30, 20, 18);
+newLabel("screen3RankEntryOut5", "Entry:", 96, 330, 30, 20, 18);
+newLabel("screen3Rank1", "1:", 152, 250, 30, 20, 18);
+newLabel("screen3Rank2", "2:", 152, 270, 30, 20, 18);
+newLabel("screen3Rank3", "3:", 152, 290, 30, 20, 18);
+newLabel("screen3Rank4", "4:", 152, 310, 30, 20, 18);
+newLabel("screen3Rank5", "5:", 152, 330, 30, 20, 18);
+newLabel("screen3RankOut1", "", 220, 250, 200, 20, 18);
+newLabel("screen3RankOut2", "", 220, 270, 200, 20, 18);
+newLabel("screen3RankOut3", "", 220, 290, 200, 20, 18);
+newLabel("screen3RankOut4", "", 220, 310, 200, 20, 18);
+newLabel("screen3RankOut5", "", 220, 330, 200, 20, 18);
+dynamicFilter(passwordsRank, "Maximum", 0, 999999);
+dynamicFilter(passwordsRank, "Minimum", 0, 999999);
+for (var i = 1; i<6; i++){
+    setProperty("screen3RankEntryOut" + i, "text", "");
+    setProperty("screen3RankOut" + i, "text", "");
+}
+onEvent("screen3CategoryInput", "change", function(){
+    next5Calls = 0;
+});
+onEvent("screen3BoundInput", "change", function(){
+    next5Calls = 0;
+});
 onEvent("screen3FilterButton", "click", function(){
+    next5Calls = 0;
+    showElement("screen3Next5FilterButton");
     if (getText("screen3CategoryInput") == "Rank"){
         dynamicFilter(passwordsRank, (getText("screen3BoundInput")));
     } if (getText("screen3CategoryInput") == "Value"){
         dynamicFilter(passwordsValue, (getText("screen3BoundInput")));
     } if (getText("screen3CategoryInput") == "Strength"){
         dynamicFilter(passwordsStrength, (getText("screen3BoundInput")));
+    }
+});
+onEvent("screen3Next5FilterButton", "click", function(){
+    for (var i = 1; i<5; i++){
+        setProperty("screen3RankEntryOut" + i, "text", "");
+        setProperty("screen3RankOut" + i, "text", "");
+    }
+    next5Calls++;
+    if (getText("screen3BoundInput") == "Maximum"){
+        if (getText("screen3CategoryInput") == "Rank"){
+            dynamicFilter(passwordsRank, (getText("screen3BoundInput")), (getNumber("screen3RankOut5")), 999999);
+        } if (getText("screen3CategoryInput") == "Value"){
+            dynamicFilter(passwordsValue, (getText("screen3BoundInput")), (getNumber("screen3RankOut5")), 999999);
+        } if (getText("screen3CategoryInput") == "Strength"){
+            dynamicFilter(passwordsStrength, (getText("screen3BoundInput")), (getNumber("screen3RankOut5")), 999999);
+        }
+    }
+    if (getText("screen3BoundInput") == "Minimum"){
+        if (getText("screen3CategoryInput") == "Rank"){
+            dynamicFilter(passwordsRank, (getText("screen3BoundInput")), 0, (getNumber("screen3RankOut5")));
+        } if (getText("screen3CategoryInput") == "Value"){
+            dynamicFilter(passwordsValue, (getText("screen3BoundInput")), 0, (getNumber("screen3RankOut5")));
+        } if (getText("screen3CategoryInput") == "Strength"){
+            dynamicFilter(passwordsStrength, (getText("screen3BoundInput")), 0, (getNumber("screen3RankOut5")));
+        }
     }
 });
 
