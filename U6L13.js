@@ -236,6 +236,14 @@ function dynamicFilter(category, bound, lastLowestMax, lastHighestMin){
     }
 }
 
+function timeUnitOutput(){
+    var entryNum = -1;
+    for (var timeUnitIndex = 1; timeUnitIndex < 5; timeUnitIndex++){
+        entryNum = getNumber("screen3RankEntryOut" + timeUnitIndex);
+        setProperty("screen3TimeUnitOut" + timeUnitIndex, "text", passwordsTime_Unit[entryNum]);
+    }
+}
+
 function makeRandomPassword(){
     var number = 0;
     var randomPasswordCompList = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b",
@@ -331,6 +339,11 @@ newLabel("screen3RankOut2", "", 220, 270, 200, 20, 18);
 newLabel("screen3RankOut3", "", 220, 290, 200, 20, 18);
 newLabel("screen3RankOut4", "", 220, 310, 200, 20, 18);
 newLabel("screen3RankOut5", "", 220, 330, 200, 20, 18);
+newLabel("screen3TimeUnitOut1", "", 250, 250, 200, 20, 18);
+newLabel("screen3TimeUnitOut2", "", 250, 270, 200, 20, 18);
+newLabel("screen3TimeUnitOut3", "", 250, 290, 200, 20, 18);
+newLabel("screen3TimeUnitOut4", "", 250, 310, 200, 20, 18);
+newLabel("screen3TimeUnitOut5", "", 250, 330, 200, 20, 18);
 dynamicFilter(passwordsRank, "Maximum", 0, 999999);
 dynamicFilter(passwordsRank, "Minimum", 0, 999999);
 for (var i = 1; i<6; i++){
@@ -348,10 +361,17 @@ onEvent("screen3FilterButton", "click", function(){
     showElement("screen3Next5FilterButton");
     if (getText("screen3CategoryInput") == "Rank"){
         dynamicFilter(passwordsRank, (getText("screen3BoundInput")));
+        for (var indexingThings = 1; indexingThings < 5; indexingThings++){
+            setProperty("screen3TimeUnitOut" + indexingThings, "text", "");
+        }
     } if (getText("screen3CategoryInput") == "Value"){
         dynamicFilter(passwordsValue, (getText("screen3BoundInput")));
+        timeUnitOutput();
     } if (getText("screen3CategoryInput") == "Strength"){
         dynamicFilter(passwordsStrength, (getText("screen3BoundInput")));
+        for (var indexingThings = 1; indexingThings < 5; indexingThings++){
+            setProperty("screen3TimeUnitOut" + indexingThings, "text", "");
+        }
     }
 });
 onEvent("screen3Next5FilterButton", "click", function(){
