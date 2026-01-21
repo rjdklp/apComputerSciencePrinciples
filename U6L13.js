@@ -238,9 +238,15 @@ function dynamicFilter(category, bound, lastLowestMax, lastHighestMin){
 
 function timeUnitOutput(){
     var entryNum = -1;
-    for (var timeUnitIndex = 1; timeUnitIndex < 5; timeUnitIndex++){
+    for (var timeUnitIndex = 1; timeUnitIndex < 6; timeUnitIndex++){
         entryNum = getNumber("screen3RankEntryOut" + timeUnitIndex);
         setProperty("screen3TimeUnitOut" + timeUnitIndex, "text", passwordsTime_Unit[entryNum]);
+    }
+}
+
+function resetTimeUnitOutputLabels(){
+    for (var indexingThings = 1; indexingThings < 6; indexingThings++){
+        setProperty("screen3TimeUnitOut" + indexingThings, "text", "");
     }
 }
 
@@ -361,17 +367,13 @@ onEvent("screen3FilterButton", "click", function(){
     showElement("screen3Next5FilterButton");
     if (getText("screen3CategoryInput") == "Rank"){
         dynamicFilter(passwordsRank, (getText("screen3BoundInput")));
-        for (var indexingThings = 1; indexingThings < 5; indexingThings++){
-            setProperty("screen3TimeUnitOut" + indexingThings, "text", "");
-        }
+        resetTimeUnitOutputLabels();
     } if (getText("screen3CategoryInput") == "Value"){
         dynamicFilter(passwordsValue, (getText("screen3BoundInput")));
         timeUnitOutput();
     } if (getText("screen3CategoryInput") == "Strength"){
         dynamicFilter(passwordsStrength, (getText("screen3BoundInput")));
-        for (var indexingThings = 1; indexingThings < 5; indexingThings++){
-            setProperty("screen3TimeUnitOut" + indexingThings, "text", "");
-        }
+        resetTimeUnitOutputLabels();
     }
 });
 onEvent("screen3Next5FilterButton", "click", function(){
@@ -383,19 +385,25 @@ onEvent("screen3Next5FilterButton", "click", function(){
     if (getText("screen3BoundInput") == "Maximum"){
         if (getText("screen3CategoryInput") == "Rank"){
             dynamicFilter(passwordsRank, (getText("screen3BoundInput")), (getNumber("screen3RankOut5")), 999999);
+            resetTimeUnitOutputLabels();
         } if (getText("screen3CategoryInput") == "Value"){
             dynamicFilter(passwordsValue, (getText("screen3BoundInput")), (getNumber("screen3RankOut5")), 999999);
+            timeUnitOutput();
         } if (getText("screen3CategoryInput") == "Strength"){
             dynamicFilter(passwordsStrength, (getText("screen3BoundInput")), (getNumber("screen3RankOut5")), 999999);
+            resetTimeUnitOutputLabels();
         }
     }
     if (getText("screen3BoundInput") == "Minimum"){
         if (getText("screen3CategoryInput") == "Rank"){
             dynamicFilter(passwordsRank, (getText("screen3BoundInput")), 0, (getNumber("screen3RankOut5")));
+            resetTimeUnitOutputLabels();
         } if (getText("screen3CategoryInput") == "Value"){
             dynamicFilter(passwordsValue, (getText("screen3BoundInput")), 0, (getNumber("screen3RankOut5")));
+            timeUnitOutput();
         } if (getText("screen3CategoryInput") == "Strength"){
             dynamicFilter(passwordsStrength, (getText("screen3BoundInput")), 0, (getNumber("screen3RankOut5")));
+            resetTimeUnitOutputLabels();
         }
     }
 });
