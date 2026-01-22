@@ -1,10 +1,13 @@
+// This code gets the time in milliseconds that the app started loading, and this variable is used to debugging and diagnostics later.
 var appStart = getTime();
 console.log("App has begun initialization");
 
+// A function to print the time since the app started loading.
 function timeSinceInit(){
     console.log(((getTime() - appStart)/1000) + " Seconds since app intialization");
 }
 
+// A framework function which makes a new label UI element, and accepts parameters.
 function newLabel(desiredId, desiredMessage, desiredXPosition, desiredYPosition, elementWidth, elementHeight, fontSize){
     if(typeof desiredId !== "string"){
         throw new Error("desiredId in newLabel must be a string");
@@ -19,6 +22,7 @@ function newLabel(desiredId, desiredMessage, desiredXPosition, desiredYPosition,
     setProperty(desiredId, "font-size", fontSize);
 }
 
+// A framework function which makes a new button UI element, and accepts parameters.
 function newButton(desiredId, desiredMessage, desiredXPosition, desiredYPosition, elementWidth, elementHeight){
     if(typeof desiredId !== "string"){
         throw new Error("desiredId in newButton must be a string");
@@ -32,6 +36,7 @@ function newButton(desiredId, desiredMessage, desiredXPosition, desiredYPosition
     setProperty(desiredId, "text-align", "center");
 }
 
+// A framework function which makes a new input UI element, and accepts parameters.
 function newInput(desiredId, desiredMessage, desiredXPosition, desiredYPosition, elementWidth, elementHeight, fontSize){
     if(typeof desiredId !== "string"){
         throw new Error("desiredId in newInput must be a string");
@@ -46,6 +51,7 @@ function newInput(desiredId, desiredMessage, desiredXPosition, desiredYPosition,
     setProperty(desiredId, "text-align", "center");
 }
 
+// A framework function which uses parameters to automatically make navigation buttons at the bottom of your screen
 function newScreenNavigationButtons(previousScreenId, nextScreenId, backButtonId, nextButtonId){
     if ((typeof previousScreenId !== "string") || (typeof backButtonId !== "string")){
         throw new Error("newScreenNavigationButtons requires string based parameters, nextScreenId and nextButtonId are optional");
@@ -64,6 +70,7 @@ function newScreenNavigationButtons(previousScreenId, nextScreenId, backButtonId
     }
 }
 
+// A framework function which makes a new dropdown UI element, and accepts parameters.
 function newDropdown(desiredId, option1, option2, option3, option4, option5, option6, option7, option8, option9, option10, desiredXPosition, desiredYPosition, elementWidth, elementHeight, fontSize){
     if(typeof desiredId !== "string"){
         throw new Error("desiredId in newDropdown must be a string");
@@ -96,9 +103,10 @@ function newDropdown(desiredId, option1, option2, option3, option4, option5, opt
 }
 
 
+// This gap in the code is because the code is written in three parts.
+// The first is framework code, the second is program-specific code, and the last third is UI element and onEvent creation.
 
-
-
+// Lists to store the pulled information from the "Passwords" dataset on code.org
 console.log("Fetching dataset...");
 var datasetFetchInit = getTime();
 var passwordsPassword = getColumn("Passwords", "password");
@@ -114,6 +122,7 @@ for(var index; index < indexLimit; index++){
 console.log("Finished fetching dataset in " + ((getTime() - datasetFetchInit)/1000) + " seconds and received " + (indexLimit + 1) + " entries \n");
 timeSinceInit();
 
+// A simple function used on the second screen to pull information from the lists for a user-determined entry number
 function fetchIndex(indexNumber){
     setProperty("screen2PasswordOut", "text", passwordsPassword[indexNumber]);
     setProperty("screen2RankOut", "text", passwordsRank[indexNumber]);
@@ -123,6 +132,7 @@ function fetchIndex(indexNumber){
     setProperty("screen2StrengthOut", "text", passwordsStrength[indexNumber]);
 }
 
+// Pre-defining variables used in later functions to stop a few unimportant warnings.
 var runNumber;
 var max;
 var min;
@@ -130,6 +140,7 @@ var index;
 var entryNum = 0;
 var next5Calls = 0;
 
+// A function used to get the maximum of a category. This function is only used the first time the filter button is pressed.
 function initialMax(category){
     max = 0;
     index = 0;
@@ -144,6 +155,7 @@ function initialMax(category){
     return [entryNum, max];
 }
 
+// A function used to get the next maximum of a category.
 function nextMax(category, lastMax){
     max = 0;
     index = 0;
@@ -158,6 +170,7 @@ function nextMax(category, lastMax){
     return [entryNum, max]; 
 }
 
+// A function used to get the minimum of a category. This function is only used the first time the filter button is pressed.
 function initialMin(category){
     min = 999999;
     index = 0;
@@ -172,6 +185,7 @@ function initialMin(category){
     return [entryNum, min];
 }
 
+// A function used to get the next minimum of a category.
 function nextMin(category, lastMin){
     min = 999999;
     index = 0;
@@ -186,6 +200,7 @@ function nextMin(category, lastMin){
     return [entryNum, min]; 
 }
 
+// A function which calls the other filter functions. This function accepts parameters and filters the dataset accordingly.
 function dynamicFilter(category, bound, lastLowestMax, lastHighestMin){
     if (next5Calls == 0){
         if (bound == "Maximum"){
@@ -236,6 +251,8 @@ function dynamicFilter(category, bound, lastLowestMax, lastHighestMin){
     }
 }
 
+// This function is used to output the respective time unit value when the third screen filter category is set to "Value".
+// This is necessary because otherwise, the users don't know what each number means.
 function timeUnitOutput(){
     var entryNum = -1;
     for (var timeUnitIndex = 1; timeUnitIndex < 6; timeUnitIndex++){
@@ -244,12 +261,14 @@ function timeUnitOutput(){
     }
 }
 
+// A function to reset the time unit labels, used when filtering by anything other than value.
 function resetTimeUnitOutputLabels(){
     for (var indexingThings = 1; indexingThings < 6; indexingThings++){
         setProperty("screen3TimeUnitOut" + indexingThings, "text", "");
     }
 }
 
+// A function which makes a random 32 digit alpha-numeric password, and outputs it to an input on the fourth screen.
 function makeRandomPassword(){
     var number = 0;
     var randomPasswordCompList = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b",
@@ -267,12 +286,15 @@ function makeRandomPassword(){
     setProperty("screen4PasswordOut", "text", password);
 }
 
-// UI Element Creation Below
 
+// The third and final section, UI Element Creation Below.
+
+// Code to output that UI Element creation has begun, and a variable later used to see how long it took to make all the UI elements.
 console.log("Creating UI Elements...");
 var UiElementsCreationInit = getTime();
 
-// Already on screen1 so no set screen required
+// The code for UI element creation on screen 1
+// Already on screen1 so no set screen required.
 newLabel("screen1Title", "Passwords Dataset Analyzer", 160, 60, 300, 100, 25);
 newLabel("screen1Intro", "Made by rjdklp, please enjoy", 160, 165, 250, 150, 18);
 newButton("screen1NextButton", "Next", 260, 420, 75, 40);
@@ -288,8 +310,9 @@ onEvent("screen1NextButton", "click", function(){
     setScreen("screen2");
 });
 
+// The code for UI element creation on screen 2
 setScreen("screen2");
-// Code for screen2 here
+// Code for screen2 here.
 newScreenNavigationButtons("screen1", "screen3", "screen2BackButton", "screen2NextButton");
 newLabel("screen2Title", "Passwords Visualizer", 160, 60, 400, 100, 25);
 newLabel("screen2Intro", "Allows for visualization of user defined indexes in the passwords dataset", 160, 120, 250, 150, 14);
@@ -313,8 +336,9 @@ onEvent("screen2ListIndexInputUse", "click", function(){
     fetchIndex((+getText("screen2ListIndexInput")) - 1);
 });
 
+// The code for UI element creation on screen 3
 setScreen("screen3");
-// Code for screen3 here
+// Code for screen3 here.
 newScreenNavigationButtons("screen2", "screen4", "screen3BackButton", "screen3NextButton");
 newLabel("screen3Title", "Passwords Filter", 160, 60, 400, 100, 25);
 newLabel("screen3Intro", "Allows user-directed filtering of the passwords dataset", 160, 120, 250, 150, 14);
@@ -408,8 +432,9 @@ onEvent("screen3Next5FilterButton", "click", function(){
     }
 });
 
+// The code for UI element creation on screen 4
 setScreen("screen4");
-// Code for screen4 here
+// Code for screen4 here.
 newScreenNavigationButtons("screen3", undefined, "screen4BackButton", undefined);
 newLabel("screen4Title", "Password Generator", 160, 60, 400, 100, 25);
 newLabel("screen4Intro", "Creates a random alpha-numeric 32 digit password", 160, 120, 250, 150, 14);
@@ -419,8 +444,10 @@ onEvent("screen4RandomPasswordIn", "click", function(){
     makeRandomPassword();
 });
 
+// Code to return the screen to screen1, that way the user starts on the first screen.
 setScreen("screen1");
 
+// Diagnostic code to see how long it took to run the app.
 console.log("Finished creating UI elements in " + ((getTime() - UiElementsCreationInit)/1000) + " seconds \n");
 console.log("Finished App Initialization");
 timeSinceInit();
